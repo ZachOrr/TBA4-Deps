@@ -4,7 +4,7 @@ private struct APIConstants {
     static let baseURL = URL(string: "https://www.thebluealliance.com/api/v3/")!
 }
 
-public struct TBAKit {
+public final class TBAKit {
 
     internal var apiKey: String
     internal var session: TBASession
@@ -32,7 +32,7 @@ public struct TBAKit {
     internal func fetch<T: Decodable>(_ endpoint: String, useCache: Bool = true) async throws -> T {
         var request = try request(endpoint: endpoint)
         var postRequestBlock = { (response: HTTPURLResponse, data: Data) throws -> T in
-            return try decodeAndCache(response: response, data: data)
+            return try self.decodeAndCache(response: response, data: data)
         }
         // Swap our request for our request with cache headers
         // Swap our post-request block to return cached data, if necessary
@@ -41,7 +41,7 @@ public struct TBAKit {
             postRequestBlock = { (response: HTTPURLResponse, data: Data) -> T in
                 // Decode from our cached data
                 if response.statusCode == 304 {
-                    return try decode(data: cachedData)
+                    return try self.decode(data: cachedData)
                 }
                 return try postRequestBlock(response, data)
             }
