@@ -36,7 +36,11 @@ public actor TBAModelContainer: ModelActor {
         modelExecutor = DefaultSerialModelExecutor(modelContext: context)
     }
 
-    public func fetchEvent(key: String) throws -> Event? {
+}
+
+extension TBAModelContainer {
+
+    public func fetchEvent(key: String) async throws -> Event? {
         let predicate = #Predicate<Event> {
             $0.key == key
         }
@@ -44,7 +48,7 @@ public actor TBAModelContainer: ModelActor {
         return try modelContext.fetch(descriptor).first
     }
 
-    public func fetchEvents(year: Int) throws -> [Event] {
+    public func fetchEvents(year: Int) async throws -> [Event] {
         let predicate = #Predicate<Event> {
             $0.year == year
         }
