@@ -8,23 +8,30 @@ extension TBAStore {
 
     public func event(key: EventKey) async throws -> Event? {
         async let model = api.event(key: key)
-        async let existingEvent = Event.fetchEvent(key: key, in: modelContainer)
+        async let existingEvent = modelContainer.fetchEvent(key: key)
         do {
-            return await Event.insert(try model, in: modelContainer)
+            let event = Event(try await model)
+            await modelContainer.insert(event: event)
+            // TODO: Save?
+            return event
         }
         catch {
+            print("Error inserting event - \(error)")
             return try await existingEvent
         }
     }
 
     public func events(year: Int) async throws -> [Event] {
         async let models = api.events(year: year)
-        async let existingEvents = Event.fetchEvents(year: year, in: modelContainer)
+        async let existingEvents = modelContainer.fetchEvents(year: year)
         do {
-            return try await Event.insert(try models, in: modelContainer)
+            let events = try await models.map { Event($0) }
+            await modelContainer.insert(events: events)
+            // TODO: Save
+            return events
         }
-        catch { (error)
-            print("Error inserting - \(error)")
+        catch {
+            print("Error inserting events - \(error)")
             return try await existingEvents
         }
     }

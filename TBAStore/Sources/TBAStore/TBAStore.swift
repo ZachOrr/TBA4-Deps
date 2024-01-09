@@ -5,17 +5,17 @@ import SwiftData
 
 public final class TBAStore {
 
-    let api: TBAKit
-    public let modelContainer: ModelContainer
+    internal let api: TBAKit
+    public let modelContainer: TBAModelContainer
 
     public convenience init(apiKey: String) throws {
         self.init(
             api: TBAKit(apiKey: apiKey),
-            modelContainer: try TBAModelContainer.createModelContainer()
+            modelContainer: try TBAModelContainer()
         )
     }
 
-    public init(api: TBAKit, modelContainer: ModelContainer) {
+    public init(api: TBAKit, modelContainer: TBAModelContainer) {
         self.api = api
         self.modelContainer = modelContainer
     }

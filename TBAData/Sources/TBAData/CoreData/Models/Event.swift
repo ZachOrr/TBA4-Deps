@@ -76,7 +76,7 @@ extension Event: CustomStringConvertible {
 }
 
 extension Event {
-    public convenience init(api model: APIEvent) {
+    public convenience init(_ model: APIEvent) {
         // TODO: These models are problematic - they need to be inserted?
         self.init(
             key: model.key,
@@ -111,44 +111,5 @@ extension Event {
             playoffType: model.playoffType,
             playoffTypeString: model.playoffTypeString
         )
-    }
-}
-
-extension Event {
-    public static func fetchEvent(key: String, in container: ModelContainer) async throws -> Event? {
-        let context = ModelContext(container)
-        let predicate = #Predicate<Event> {
-            $0.key == key
-        }
-        let descriptor = FetchDescriptor(predicate: predicate)
-        return try context.fetch(descriptor).first
-    }
-
-    public static func fetchEvents(year: Int, in container: ModelContainer) async throws -> [Event] {
-        let context = ModelContext(container)
-        let predicate = #Predicate<Event> {
-            $0.year == year
-        }
-        let sortDescriptor = SortDescriptor(\Event.key)
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [sortDescriptor])
-        return try context.fetch(descriptor)
-    }
-
-    public static func insert(_ model: APIEvent, in container: ModelContainer) -> Event {
-        let context = ModelContext(container)
-        let event = Event(api: model)
-        context.insert(event)
-        return event
-    }
-
-    public static func insert(_ models: [APIEvent], in container: ModelContainer) throws -> [Event] {
-        let context = ModelContext(container)
-        let events = models.map {
-            let event = Event(api: $0)
-            context.insert(event)
-            return event
-        }
-        try context.save()
-        return events
     }
 }

@@ -43,7 +43,7 @@ class ViewController: UIViewController {
                 snapshot.appendItems(events)
                 await dataSource?.apply(snapshot, animatingDifferences: false)
             }
-            catch { (error)
+            catch {
                 print("Error fetching events - \(error)")
             }
         }

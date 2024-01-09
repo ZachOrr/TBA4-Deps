@@ -28,7 +28,6 @@ public final class TBAKit {
         }
         return decoded
     }
-
     internal func fetch<T: Decodable>(_ endpoint: String, useCache: Bool = true) async throws -> T {
         var request = try request(endpoint: endpoint)
         var postRequestBlock = { (response: HTTPURLResponse, data: Data) throws -> T in
